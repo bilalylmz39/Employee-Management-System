@@ -1,18 +1,23 @@
-from celery import Celery
 from celery.schedules import crontab
 
-app = Celery('app')
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-app.conf.beat_schedule = {
-    'check-leave-balance-daily': {
-        'task': 'leave.tasks.check_leave_balance',
-        'schedule': crontab(hour=0, minute=0),
+CELERY_BEAT_SCHEDULE = {
+    'check-employee-delays': {
+        'task': 'your_app.tasks.check_employee_delays',
+        'schedule': crontab(hour=9),  # Run at 9 AM daily
+    },
+    'check-leave-balance': {
+        'task': 'your_app.tasks.check_leave_balance',
+        'schedule': crontab(0, 0, day_of_month='1'),  # Run monthly
+    },
+    'generate-monthly-report': {
+        'task': 'your_app.tasks.generate_monthly_report',
+        'schedule': crontab(0, 0, day_of_month='1'),  # Run monthly
     },
 }
 
-app.conf.beat_schedule = {
-    'check-annual-leave-daily': {
-        'task': 'attendance.tasks.check_annual_leave',
-        'schedule': crontab(hour=0, minute=0),
-    },
-}
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
