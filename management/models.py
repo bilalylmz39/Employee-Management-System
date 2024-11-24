@@ -3,6 +3,28 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class ManagerDashboard(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    total_employees = models.IntegerField(default=0)
+    total_leave_requests = models.IntegerField(default=0)
+    total_approved_leaves = models.IntegerField(default=0)
+    total_rejected_leaves = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Manager Dashboard for {self.user.username}"
+
+
+class EmployeeDashboard(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    total_work_hours = models.DurationField(default=0)
+    remaining_leave_days = models.IntegerField(default=0)
+    total_leave_days_taken = models.IntegerField(default=0)
+    total_late_days = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Employee Dashboard for {self.user.username}"
+
+
 class Employee(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)

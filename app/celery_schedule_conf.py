@@ -1,9 +1,14 @@
 from celery.schedules import crontab
+import os
+from celery import Celery
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
-CELERY_BEAT_SCHEDULE = {
+app = Celery('app')
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+CELERYBEAT_SCHEDULE = {
     'check-employee-delays': {
         'task': 'your_app.tasks.check_employee_delays',
         'schedule': crontab(hour=9),  # Run at 9 AM daily
@@ -17,7 +22,3 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(0, 0, day_of_month='1'),  # Run monthly
     },
 }
-
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'

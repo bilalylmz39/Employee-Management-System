@@ -68,6 +68,10 @@ coverage.xml
 .pytest_cache/
 cover/
 
+
+# celerybeat-scedule files added by running docker-compose
+celerybeat*
+
 # Translations
 *.mo
 
@@ -172,3 +176,6 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+
+# Vscode files
+.vscode/*

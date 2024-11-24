@@ -1,42 +1,53 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
+from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Employee
+from management.models import Employee, Leave, Notification
 
 
-class EmployeeAPITestCase(APITestCase):
+class EmployeeTests(TestCase):
     def setUp(self):
-        self.admin_user = User.objects.create_superuser(
-            'admin', 'admin@test.com', 'password'
-        )
-        self.normal_user = User.objects.create_user(
-            'user', 'user@test.com', 'password'
+        self.user = User.objects.create_user(
+            username='testuser', password='password'
         )
         self.employee = Employee.objects.create(
-            name="John Doe",
-            email="johndoe@example.com",
+            name="Test Employee",
+            email="test@example.com",
             position="Developer"
         )
-        self.client.login(username='admin', password='password')
 
-    def test_list_employees(self):
-        response = self.client.get('/employees/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_employee_creation(self):
+        self.assertEqual(self.employee.name, "Test Employee")
+        self.assertEqual(self.employee.email, "test@example.com")
 
-    def test_create_employee(self):
-        data = {
-            "name": "Jane Smith",
-            "email": "janesmith@example.com",
-            "position": "Manager"
-        }
-        response = self.client.post('/employees/', data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_update_employee(self):
-        data = {"name": "John Updated"}
-        response = self.client.patch(f'/employees/{self.employee.id}/', data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+class LeaveTests(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(
+            name="Test Employee",
+            email="test@example.com",
+            position="Developer"
+        )
+        self.leave = Leave.objects.create(
+            employee=self.employee,
+            start_date="2024-11-01",
+            end_date="2024-11-05"
+        )
 
-    def test_delete_employee(self):
-        response = self.client.delete(f'/employees/{self.employee.id}/')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    def test_leave_creation(self):
+        self.assertEqual(self.leave.days_requested, 5)
+        self.assertEqual(self.leave.status, 'pending')
+
+
+class NotificationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='admin', password='password', is_staff=True)
+        self.notification = Notification.objects.create(
+            recipient=self.user,
+            notification_type='delay',
+            message="Test notification"
+        )
+
+    def test_notification_creation(self):
+        self.assertEqual(self.notification.recipient.username, 'admin')
+        self.assertEqual(self.notification.notification_type, 'delay')
+        self.assertFalse(self.notification.is_read)

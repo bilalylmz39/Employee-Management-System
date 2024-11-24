@@ -1,31 +1,27 @@
 version: '3.8'
-
 services:
-  web:
+  app:
     build: .
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgres://user:password@db:5432/attendance
+    volumes:
+      - .:/code
     depends_on:
       - db
-
-  db:
-    image: postgres:13
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: attendance
+      - DJANGO_SETTINGS_MODULE=app.settings
+      - DEBUG=True
+  db:
+    image: postgres:14
     ports:
       - "5432:5432"
-
-  redis:
-    image: redis:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: company_db
+  rabbitmq:
+    image: rabbitmq:3-management
     ports:
-      - "6379:6379"
-
-  celery:
-    build: .
-    command: celery -A attendance worker --loglevel=info
-    depends_on:
-      - redis
+      - "5672:5672"
+      - "15672:15672"

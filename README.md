@@ -1,4 +1,4 @@
-# employee Attendance Tracking Application
+# Employee Attendance Tracking Application
 
 ## Setup
 1. Clone the repository.
@@ -12,69 +12,62 @@
 2. Use the /api/users/login/ endpoint to authenticate and obtain a JWT token.
 3. Authorization: Bearer your_jwt_token
 
-### Example request:
+# Employee Attendance and Leave Management System
 
-`POST /api/users/login/`
-Content-Type: application/json
-{"username": "your_username", "password": "your_password"}
-### Example response:
-{"token": "your_jwt_token"}
+## Overview
+This Django-based application allows companies to:
+- Track employee attendance (entry/exit times).
+- Manage annual leave balances.
+- Notify admins for delays and low leave balances.
+- Generate monthly working hour reports.
 
-## API Endpoints
+## Features
+1. **Attendance Management**: Log daily entry/exit times and calculate delays.
+2. **Leave Management**:
+   - Auto-assign 15 leave days to new employees.
+   - Employees can request leaves.
+   - Admins can approve/reject leave requests.
+   - Automatic deduction of leave days for late entries.
+   - Notify admins when leave balance drops below 3 days.
+3. **Notifications**: WebSocket-based real-time notifications.
+4. **Monthly Reports**: Summarize employee work hours.
 
-### Authentication
-Login: POST `/api/users/login/`
-Authenticate the user and retrieve a JWT token.
 
-Logout: POST `/api/users/logout/`
-Log out the user and invalidate the JWT token.
+## Manager Endpoints
+List all employees or create a new employee
+`URL: /manager/`
+Method: GET, POST
 
-### Employee Management
-List employees: `GET /api/employees/`
-Retrieve a list of all employees. (Requires Manager Access)
+Retrieve, update, or delete a specific employee
+`URL: /manager/<int:pk>/`
+Method: GET, PUT, PATCH, DELETE
 
-Create employee: `POST /api/employees/`
-Add a new employee. (Requires Manager Access)
+Review a specific leave request
+`URL: /manager/leave/<int:pk>/`
+Method: GET, PUT, DELETE
 
-Retrieve employee Details: `GET /api/employees/<id>/`
-View details of a specific employee.
+List all leave requests of employees
+`URL: /manager/leaves/`
+Method: GET
 
-Update employee Details: `PUT /api/employees/<id>/`
-Update information for a specific employee. (Requires Manager Access)
+## Employee Endpoints
+Create a new leave request
+`URL: /employee/leave/`
+Method: POST
+Notification Endpoints
+Clock in for work
+`URL: /notification/clock-in/`
+Method: POST
 
-Delete employee: `DELETE /api/employees/<id>/`
-Remove an employee from the system. (Requires Manager Access)
+Clock out of work
+`URL: /notification/clock-out/<int:pk>/`
+Method: PUT
 
-### Attendance
-Record Entry/Exit: `POST /api/attendance/`
-Record an employee's entry or exit time.
+List all notifications for the user
+`URL: /notifications/`
+Method: GET
 
-View Attendance Logs: `GET /api/attendance/`
-Retrieve the attendance logs for the authenticated user.
-
-Manager Attendance Overview: `GET /api/attendance/overview/`
-Get a summary of employee attendance, including late entries and total hours worked. (Requires Manager Access)
-
-### Leave Management
-Request Leave: `POST /api/leaves/request/`
-Submit a leave request.
-
-View Leave Requests: `GET /api/leaves/`
-Retrieve the leave requests of the authenticated user.
-
-Approve/Reject Leave: `POST /api/leaves/<id>/action/`
-Approve or reject a leave request. (Requires Manager Access)
-
-Manager Leave Overview: `GET /api/leaves/overview/`
-View all leave records and their statuses. (Requires Manager Access)
-
-## Notifications
-### Celery Integration
-Notifications for late arrivals and low annual leave balances are managed using Celery.
-
-### WebSocket Integration
-Real-time notifications are sent to the manager dashboard via WebSocket.
-
-## Additional Notes
-Ensure the RabbitMQ broker is running before starting Celery.
-For API documentation, visit /swagger/ after starting the server.
+## WebSocket
+Receive real-time notifications
+`URL: /ws/notifications/`
+Protocol: WebSocket

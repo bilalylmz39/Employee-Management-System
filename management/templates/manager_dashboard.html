@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Manager Dashboard for {{ dashboard.user.username }}</h1>
+
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Total Employees</h4>
+                        <p>{{ dashboard.total_employees }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Total Leave Requests</h4>
+                        <p>{{ dashboard.total_leave_requests }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Total Approved Leaves</h4>
+                        <p>{{ dashboard.total_approved_leaves }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Total Rejected Leaves</h4>
+                        <p>{{ dashboard.total_rejected_leaves }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h2>Create Employee</h2>
+            <form method="post" action="{% url 'create_employee' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="position">Position:</label>
+                    <input type="text" class="form-control" id="position" name="position" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Employee</button>
+            </form>
+        </div>
+
+        <div class="mt-5">
+            <h2>Leave Requests</h2>
+            <ul class="list-group">
+                {% for leave in leave_requests %}
+                    <li class="list-group-item">
+                        {{ leave.employee.name }} - {{ leave.start_date }} to {{ leave.end_date }} - {{ leave.status }}
+                        <form method="post" action="{% url 'manager_leave_check' leave.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <select name="status" class="form-control d-inline w-auto">
+                                <option value="approved">Approve</option>
+                                <option value="rejected">Reject</option>
+                            </select>
+                            <button type="submit" class="btn btn-secondary">Update</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mt-5 text-center">
+            <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
