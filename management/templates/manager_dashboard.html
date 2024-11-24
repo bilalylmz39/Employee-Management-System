@@ -5,15 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('https://source.unsplash.com/1600x900/?business,management');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 50px;
+        }
+        h1, h2, h4 {
+            color: #ffc107;
+        }
+        .card {
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background-color: #ffc107;
+            border: none;
+            color: #000000;
+        }
+        .btn-primary:hover {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #bd2130;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .form-control, select {
+            background-color: #444444;
+            color: #ffffff;
+            border: none;
+        }
+        .form-control::placeholder {
+            color: #bbbbbb;
+        }
+        ul.list-group li {
+            background-color: #444444;
+            color: #ffffff;
+            border: none;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container mt-5">
+    <div class="container">
         <h1 class="text-center">Manager Dashboard for {{ dashboard.user.username }}</h1>
 
         <div class="row mt-4">
             <div class="col-md-3">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-body">
                         <h4>Total Employees</h4>
                         <p>{{ dashboard.total_employees }}</p>
@@ -21,7 +80,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-body">
                         <h4>Total Leave Requests</h4>
                         <p>{{ dashboard.total_leave_requests }}</p>
@@ -29,7 +88,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-body">
                         <h4>Total Approved Leaves</h4>
                         <p>{{ dashboard.total_approved_leaves }}</p>
@@ -37,7 +96,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-body">
                         <h4>Total Rejected Leaves</h4>
                         <p>{{ dashboard.total_rejected_leaves }}</p>
@@ -52,15 +111,15 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <input type="text" class="form-control" id="name" name="name" required placeholder="Enter employee name">
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="Enter employee email">
                 </div>
                 <div class="form-group">
                     <label for="position">Position:</label>
-                    <input type="text" class="form-control" id="position" name="position" required>
+                    <input type="text" class="form-control" id="position" name="position" required placeholder="Enter employee position">
                 </div>
                 <button type="submit" class="btn btn-primary">Create Employee</button>
             </form>
@@ -71,7 +130,14 @@
             <ul class="list-group">
                 {% for leave in leave_requests %}
                     <li class="list-group-item">
-                        {{ leave.employee.name }} - {{ leave.start_date }} to {{ leave.end_date }} - {{ leave.status }}
+                        <strong>{{ leave.employee.name }}</strong> - {{ leave.start_date }} to {{ leave.end_date }} - 
+                        {% if leave.status == 'approved' %}
+                            <span class="text-success">Approved</span>
+                        {% elif leave.status == 'rejected' %}
+                            <span class="text-danger">Rejected</span>
+                        {% else %}
+                            <span class="text-warning">Pending</span>
+                        {% endif %}
                         <form method="post" action="{% url 'manager_leave_check' leave.id %}" class="d-inline">
                             {% csrf_token %}
                             <select name="status" class="form-control d-inline w-auto">

@@ -5,22 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('https://source.unsplash.com/1600x900/?technology,login');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 400px;
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 100px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #ffc107;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+        }
+        .form-control::placeholder {
+            color: #bbbbbb;
+        }
+        .btn-primary {
+            background-color: #ffc107;
+            border: none;
+            color: #000000;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #e0a800;
+        }
+        a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container mt-5">
+    <div class="container">
         <h1 class="text-center">Login</h1>
         <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input type="text" class="form-control" id="username" name="username" required placeholder="Enter your username">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
     </div>
 

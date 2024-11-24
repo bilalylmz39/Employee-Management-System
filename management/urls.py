@@ -30,9 +30,9 @@ urlpatterns = [
 
     # EMPLOYEE
     path(
-            'employee/dashboard/',
-            api_views.EmployeeDashboardView.as_view(),
-            name='employee_dashboard'
+        'employee/dashboard/',
+        api_views.EmployeeDashboardView.as_view(),
+        name='employee_dashboard'
     ),
     path(
         'employee/leave/',

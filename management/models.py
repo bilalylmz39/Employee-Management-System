@@ -16,7 +16,7 @@ class ManagerDashboard(models.Model):
 
 class EmployeeDashboard(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    total_work_hours = models.DurationField(default=0)
+    total_work_hours = models.DurationField(default=datetime.timedelta)
     remaining_leave_days = models.IntegerField(default=0)
     total_leave_days_taken = models.IntegerField(default=0)
     total_late_days = models.IntegerField(default=0)
@@ -26,6 +26,7 @@ class EmployeeDashboard(models.Model):
 
 
 class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     position = models.CharField(max_length=100)

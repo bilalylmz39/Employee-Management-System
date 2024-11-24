@@ -97,6 +97,34 @@ class EmployeeDashboardView(APIView):
             {'dashboard': dashboard, 'leave_requests': leave_requests}
         )
 
+    def post(self, request):
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
+        start_date_obj = datetime.datetime.strptime(
+            start_date, '%Y-%m-%d').date()
+        end_date_obj = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+        days_requested = (end_date_obj - start_date_obj).days + 1
+
+        try:
+            employee = request.user.employee
+        except Employee.DoesNotExist:
+            employee = Employee.objects.create(
+                user=request.user,
+                name=request.user.username,
+                email=request.user.email,
+                position='Unknown'
+            )
+
+        Leave.objects.create(
+            employee=employee,
+            start_date=start_date_obj,
+            end_date=end_date_obj,
+            days_requested=days_requested,
+            status='pending'
+        )
+
+        return redirect('employee_dashboard')
+
 
 # EMPLOYEE MANAGEMENT
 class CreateEmployeeView(ListCreateAPIView):
